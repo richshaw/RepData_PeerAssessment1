@@ -1,4 +1,4 @@
-`r opts_chunk$set(echo=TRUE)`
+
 
 # Reproducible Research: Peer Assessment 1
 
@@ -22,7 +22,8 @@ in 5 minute intervals each day.
 Unzip data file in working directory and load CSV file into memory. Removes CSV 
 file once loaded into memory.
 
-```{r}
+
+```r
 zipFile <- "activity.zip"
 unzip(zipFile)
 dataFile <- "activity.csv"
@@ -32,7 +33,8 @@ unlink(dataFile)
 
 Convert date column into date data type.
 
-```{r}
+
+```r
 data.all$date <- as.Date(data.all$date , format = "%Y-%m-%d")
 ```
 
@@ -41,13 +43,15 @@ data.all$date <- as.Date(data.all$date , format = "%Y-%m-%d")
 
 ### Total number of steps taken each day
 
-```{r}
+
+```r
 library('plyr')
 ## Create summary table with total number of steps each day
 summary.stepsDay <- ddply(data.all, .(date), summarize, totalSteps = sum(steps, na.rm = TRUE))
 ```
 
-```{r}
+
+```r
 library('ggplot2')
 ## Plot summary data
 figure.stepsDay <- ggplot(summary.stepsDay, aes(x = totalSteps)) + 
@@ -59,22 +63,39 @@ figure.stepsDay <- ggplot(summary.stepsDay, aes(x = totalSteps)) +
 plot(figure.stepsDay)
 ```
 
+```
+## stat_bin: binwidth defaulted to range/30. Use 'binwidth = x' to adjust this.
+```
+
+![plot of chunk unnamed-chunk-4](figure/unnamed-chunk-4.png) 
+
 ### The mean and median total number of steps taken per day
 
 *Mean* number of steps per day:
-```{r}
+
+```r
 mean(summary.stepsDay$totalSteps, na.rm = TRUE)
 ```
+
+```
+## [1] 9354
+```
 *Median* number of steps per day:
-```{r}
+
+```r
 median(summary.stepsDay$totalSteps, na.rm = TRUE)
+```
+
+```
+## [1] 10395
 ```
 
 ## What is the average daily activity pattern?
 
 ### Time series plot of the average number of steps taken at each interval
 
-```{r}
+
+```r
 library(ggplot2)
 library(plyr)
 summary.stepsInterval <- ddply(data.all, .(interval), summarize, 
@@ -90,13 +111,20 @@ figure.stepsInterval <- ggplot(summary.stepsInterval,
 plot(figure.stepsInterval)
 ```
 
+![plot of chunk unnamed-chunk-7](figure/unnamed-chunk-7.png) 
+
 ### The five minute interval that on average contains the most number of steps
 
 Five minute interval:
 
-```{r}
+
+```r
 summary.stepsIntervalMax <- summary.stepsInterval[which.max(summary.stepsInterval$meanSteps),]
 summary.stepsIntervalMax$interval
+```
+
+```
+## [1] 835
 ```
 
 
@@ -105,15 +133,21 @@ summary.stepsIntervalMax$interval
 ### Total number of missing values in the dataset (i.e. the total number of rows with NAs)
 
 Total number of missing values in the dataset is:
-```{r}
+
+```r
 sum(is.na(data.all))
+```
+
+```
+## [1] 2304
 ```
 
 ### Replace missing values
 
 Missing values are replaced with the mean for that interval.
 
-```{r}
+
+```r
 library('plyr')
 impute.mean <- function(x) replace(x, is.na(x), mean(x, na.rm = TRUE))
 data.impute <- ddply(data.all, ~interval, transform, steps = impute.mean(steps))
@@ -122,13 +156,15 @@ data.impute <- data.impute [order(data.impute $date), ]
 
 ### Histogram of the total number of steps taken each day
 
-```{r}
+
+```r
 library('plyr')
 ## Create summary table with total number of steps each day from imputted data
 summary.stepsDayImpute <- ddply(data.impute, .(date), summarize, totalSteps = sum(steps, na.rm = TRUE))
 ```
 
-```{r}
+
+```r
 library('ggplot2')
 ## Plot summary data
 figure.stepsDayImpute <- ggplot(summary.stepsDayImpute, aes(x = totalSteps)) + 
@@ -140,22 +176,39 @@ figure.stepsDayImpute <- ggplot(summary.stepsDayImpute, aes(x = totalSteps)) +
 plot(figure.stepsDayImpute)
 ```
 
+```
+## stat_bin: binwidth defaulted to range/30. Use 'binwidth = x' to adjust this.
+```
+
+![plot of chunk unnamed-chunk-12](figure/unnamed-chunk-12.png) 
+
 ### The mean and median total number of steps taken per day
 
 *Mean* number of steps per day imputed:
-```{r}
+
+```r
 mean(summary.stepsDayImpute$totalSteps, na.rm = TRUE)
 ```
+
+```
+## [1] 10766
+```
 *Median* number of steps per day imputed:
-```{r}
+
+```r
 median(summary.stepsDayImpute$totalSteps, na.rm = TRUE)
+```
+
+```
+## [1] 10766
 ```
 
 ### Does the imputed data differ from the orginal data?
 
 Do these values differ from the estimates from the first part of the assignment? What is the impact of imputing missing data on the estimates of the total daily number of steps?
 
-```{r}
+
+```r
 library('ggplot2')
 library('plyr')
 ## Combine data sets
@@ -176,16 +229,32 @@ figure.stepsDayCombined <- ggplot(summary.stepsDayCombined, aes(x=totalSteps, fi
 plot(figure.stepsDayCombined)
 ```
 
+```
+## stat_bin: binwidth defaulted to range/30. Use 'binwidth = x' to adjust this.
+```
+
+![plot of chunk unnamed-chunk-15](figure/unnamed-chunk-15.png) 
+
 The *mean* number of steps per day from imputed data differs from the orignal by:
 
-```{r}
+
+```r
 mean(summary.stepsDayImpute$totalSteps, na.rm = TRUE) - mean(summary.stepsDay$totalSteps, na.rm = TRUE)
+```
+
+```
+## [1] 1412
 ```
 
 The *median* number of steps per day from imputed data differs from the orignal by:
 
-```{r}
+
+```r
 median(summary.stepsDayImpute$totalSteps, na.rm = TRUE) - median(summary.stepsDay$totalSteps, na.rm = TRUE)
+```
+
+```
+## [1] 371.2
 ```
 
 *Imputing missing data on the estimates of the total daily number of steps smooths out the the distrubution a little.*
@@ -195,7 +264,8 @@ median(summary.stepsDayImpute$totalSteps, na.rm = TRUE) - median(summary.stepsDa
 Creating a new factor variable in the dataset with two levels – "weekday"" and
 "weekend"" indicating whether a given date is a weekday or weekend day.
 
-```{r}
+
+```r
 ## Assuming the dataset in question is the imputed datset rather than the 
 ## orginal 
 library('chron')
@@ -207,7 +277,8 @@ data.all$weekend <- factor(data.all$weekend, levels = c(TRUE,FALSE), labels = c(
 Time series plot of  5-minute intervals and the average number of steps taken, 
 averaged across all weekday days or weekend days.
 
-```{r}
+
+```r
 library('ggplot2')
 library('plyr')
 summary.stepsIntervalWeekend <- ddply(data.all, .(weekend,interval), summarize,
@@ -223,5 +294,7 @@ figure.stepsIntervalWeekend <- ggplot(summary.stepsIntervalWeekend,
 
 plot(figure.stepsIntervalWeekend)
 ```
+
+![plot of chunk unnamed-chunk-19](figure/unnamed-chunk-19.png) 
 
 
