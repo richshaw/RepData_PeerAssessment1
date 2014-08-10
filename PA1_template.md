@@ -71,24 +71,18 @@ plot(figure.stepsDay)
 
 ### The mean and median total number of steps taken per day
 
-*Mean* number of steps per day:
 
 ```r
-mean(summary.stepsDay$totalSteps, na.rm = TRUE)
+meanStepsDay <- mean(summary.stepsDay$totalSteps, na.rm = TRUE)
 ```
+*Mean* number of steps per day: **9354.2295**
 
-```
-## [1] 9354
-```
-*Median* number of steps per day:
 
 ```r
-median(summary.stepsDay$totalSteps, na.rm = TRUE)
+medianStepsDay <- median(summary.stepsDay$totalSteps, na.rm = TRUE)
 ```
+*Median* number of steps per day: **10395**
 
-```
-## [1] 10395
-```
 
 ## What is the average daily activity pattern?
 
@@ -115,32 +109,23 @@ plot(figure.stepsInterval)
 
 ### The five minute interval that on average contains the most number of steps
 
-Five minute interval:
-
 
 ```r
 summary.stepsIntervalMax <- summary.stepsInterval[which.max(summary.stepsInterval$meanSteps),]
-summary.stepsIntervalMax$interval
+intervalMax <- summary.stepsIntervalMax$interval
 ```
-
-```
-## [1] 835
-```
-
+Five minute interval that on average contains the most number of steps is: **835**
 
 ## Imputing missing values
 
 ### Total number of missing values in the dataset (i.e. the total number of rows with NAs)
 
-Total number of missing values in the dataset is:
 
 ```r
-sum(is.na(data.all))
+naSum <- sum(is.na(data.all))
 ```
+Total number of missing values in the dataset is: **2304**
 
-```
-## [1] 2304
-```
 
 ### Replace missing values
 
@@ -184,24 +169,18 @@ plot(figure.stepsDayImpute)
 
 ### The mean and median total number of steps taken per day
 
-*Mean* number of steps per day imputed:
 
 ```r
-mean(summary.stepsDayImpute$totalSteps, na.rm = TRUE)
+meanStepsDayImpute <- mean(summary.stepsDayImpute$totalSteps, na.rm = TRUE)
 ```
+*Mean* number of steps per day imputed: **1.0766 &times; 10<sup>4</sup>**
 
-```
-## [1] 10766
-```
-*Median* number of steps per day imputed:
 
 ```r
-median(summary.stepsDayImpute$totalSteps, na.rm = TRUE)
+medianStepsDayImpute <- median(summary.stepsDayImpute$totalSteps, na.rm = TRUE)
 ```
+*Median* number of steps per day imputed: **1.0766 &times; 10<sup>4</sup>**
 
-```
-## [1] 10766
-```
 
 ### Does the imputed data differ from the orginal data?
 
@@ -222,7 +201,7 @@ summary.stepsDayCombined <- ddply(data.combined, .(source,interval),
 ## Plot overlaided histograms
 figure.stepsDayCombined <- ggplot(summary.stepsDayCombined, aes(x=totalSteps, fill=source)) + 
                          geom_histogram(alpha=.5, position="identity")  +                  
-                         ggtitle("Frequency of total steps per day") +
+                         ggtitle("Difference between total steps per day") +
                          xlab("Total number of steps each day") +
                          ylab("Frequency")
 
@@ -235,27 +214,17 @@ plot(figure.stepsDayCombined)
 
 ![plot of chunk unnamed-chunk-15](figure/unnamed-chunk-15.png) 
 
-The *mean* number of steps per day from imputed data differs from the orignal by:
+
+```r
+meanDiff <- mean(summary.stepsDayImpute$totalSteps, na.rm = TRUE) - mean(summary.stepsDay$totalSteps, na.rm = TRUE)
+```
+The *mean* number of steps per day from imputed data differs from the orignal by: **1411.9592**
 
 
 ```r
-mean(summary.stepsDayImpute$totalSteps, na.rm = TRUE) - mean(summary.stepsDay$totalSteps, na.rm = TRUE)
+medianDiff <- median(summary.stepsDayImpute$totalSteps, na.rm = TRUE) - median(summary.stepsDay$totalSteps, na.rm = TRUE)
 ```
-
-```
-## [1] 1412
-```
-
-The *median* number of steps per day from imputed data differs from the orignal by:
-
-
-```r
-median(summary.stepsDayImpute$totalSteps, na.rm = TRUE) - median(summary.stepsDay$totalSteps, na.rm = TRUE)
-```
-
-```
-## [1] 371.2
-```
+The *median* number of steps per day from imputed data differs from the orignal by: **371.1887**
 
 *Imputing missing data on the estimates of the total daily number of steps smooths out the the distrubution a little.*
 
