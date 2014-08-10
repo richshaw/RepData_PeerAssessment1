@@ -129,7 +129,7 @@ Total number of missing values in the dataset is: **2304**
 
 ### Replace missing values
 
-Missing values are replaced with the mean for that interval.
+Imputation strategy: The missing values are replaced with the *mean* for that interval.
 
 
 ```r
@@ -139,7 +139,7 @@ data.impute <- ddply(data.all, ~interval, transform, steps = impute.mean(steps))
 data.impute <- data.impute [order(data.impute $date), ]
 ```
 
-### Histogram of the total number of steps taken each day
+### Histogram of the total number of steps taken each day (imputed data)
 
 
 ```r
@@ -154,7 +154,7 @@ library('ggplot2')
 ## Plot summary data
 figure.stepsDayImpute <- ggplot(summary.stepsDayImpute, aes(x = totalSteps)) + 
                    geom_histogram(fill="blue") + 
-                   ggtitle("Frequency of total steps per day imputed") +
+                   ggtitle("Frequency of total steps per day (imputed data)") +
                    xlab("Total number of steps each day") +
                    ylab("Frequency")
 
